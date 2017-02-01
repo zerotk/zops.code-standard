@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import glob
-from contextlib import contextmanager
-from tempfile import NamedTemporaryFile
+from zerotk.zops import call_main
 
 import click
 
@@ -82,14 +80,3 @@ def autopep8(path):
     if os.path.isdir(path):
         autopep8_args.insert(0, '--recursive')
     call_main(autopep8_main, *autopep8_args)
-
-
-def call_main(func, *argv):
-    import sys
-    old_argv = sys.argv
-    sys.argv = [''] + list(argv)
-    try:
-        return func()
-    finally:
-        sys.argv = old_argv
-
