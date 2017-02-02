@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from zerotk.zops import call_main
+from zerotk.zops import call_main, Console
 
 import click
 
@@ -14,10 +14,12 @@ def main():
 
 @main.command()
 @click.argument('path')
-def apply(path):
-    isort(path)
-    autoflake(path)
-    autopep8(path)
+@click.pass_context
+def apply(ctx, path):
+    Console.title('zops code-standards apply')
+    ctx.invoke(isort, path=path)
+    ctx.invoke(autoflake, path=path)
+    ctx.invoke(autopep8, path=path)
 
 
 @main.command()
@@ -26,8 +28,7 @@ def isort(path):
     import os
     from isort.main import main as isort_main
 
-    click.echo('code-standards apply')
-    click.echo('isort')
+    Console.title('zops code-standards isort')
     isort_args = [
         #'--verbose',
         '-m3',
@@ -44,6 +45,7 @@ def isort(path):
     ]
     if os.path.isdir(path):
         isort_args.insert(0, '--recursive')
+    Console.execution('isort', *isort_args)
     call_main(isort_main, *isort_args)
 
 
@@ -51,9 +53,9 @@ def isort(path):
 @click.argument('path')
 def autoflake(path):
     import os
-
-    click.echo('autoflake')
     from autoflake import main as autoflake_main
+
+    Console.title('zops code-standards autoflake')
     autoflake_args = [
         '-i',
         '--remove-all-unused-imports',
@@ -61,6 +63,7 @@ def autoflake(path):
     ]
     if os.path.isdir(path):
         autoflake_args.insert(0, '--recursive')
+    Console.execution('autoflake', *autoflake_args)
     call_main(autoflake_main, *autoflake_args)
 
 
@@ -68,9 +71,9 @@ def autoflake(path):
 @click.argument('path')
 def autopep8(path):
     import os
-
-    click.echo('autopep8')
     from autopep8 import main as autopep8_main
+
+    Console.title('zops code-standards autopep8')
     autopep8_args = [
         '-a',
         '-i',
@@ -79,4 +82,5 @@ def autopep8(path):
     ]
     if os.path.isdir(path):
         autopep8_args.insert(0, '--recursive')
+    Console.execution('autopep8', *autopep8_args)
     call_main(autopep8_main, *autopep8_args)
