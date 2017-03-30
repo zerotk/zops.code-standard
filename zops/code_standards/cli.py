@@ -13,13 +13,14 @@ def main():
 
 
 @main.command()
-@click.argument('path')
+@click.argument('paths', nargs=-1)
 @click.pass_context
-def apply(ctx, path):
+def apply(ctx, paths):
     Console.title('zops code-standards apply')
-    ctx.invoke(isort, path=path)
-    ctx.invoke(autoflake, path=path)
-    ctx.invoke(autopep8, path=path)
+    for i_path in paths:
+        ctx.invoke(isort, path=i_path)
+        ctx.invoke(autoflake, path=i_path)
+        ctx.invoke(autopep8, path=i_path)
 
 
 @main.command()
